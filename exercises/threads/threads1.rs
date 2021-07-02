@@ -6,8 +6,6 @@
 // of "waiting..." and the program ends without timing out when running,
 // you've got it :)
 
-// I AM NOT DONE
-
 use std::sync::{Arc, Mutex};
 use std::thread;
 use std::time::Duration;
@@ -22,12 +20,11 @@ fn main() {
     thread::spawn(move || {
         for _ in 0..10 {
             thread::sleep(Duration::from_millis(250));
-            let mut current_jobs_completed = status_shared.lock().unwrap().jobs_completed;
-            current_jobs_completed += 1;
+            status_shared.lock().unwrap().jobs_completed += 1;
         }
     });
 
-    while status.jobs_completed < 10 {
+    while status.lock().unwrap().jobs_completed < 10 {
         println!("waiting... ");
         thread::sleep(Duration::from_millis(500));
     }
